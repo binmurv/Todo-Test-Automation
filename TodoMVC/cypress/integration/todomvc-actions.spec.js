@@ -1,28 +1,32 @@
 /// <reference types = "cypress" />
 
+import { TodoPage } from "../page-objects/todo-page"
+
 describe('todo actions', () => {
+    const todoPage = new TodoPage()
+
     beforeEach(() => {
-        cy.visit('http://todomvc-app-for-testing.surge.sh')
-    
-        cy.get('.new-todo', {timeout: 6000}).type("Learn Cypress{enter}")
+        todoPage.navigate()
+        todoPage.addTodo('Learn Cypress')
     })
 
     it('should add a new to do to the list', () => {    
-        cy.get('label').should('have.text', 'Learn Cypress')
+        todoPage.validateTodoText(0, 'Learn Cypress')
     
-        cy.get('.toggle').should('not.be.checked')
+        todoPage.validateToggleState(0, false)
     })
     
-    it('should mark a todo as completed', () => {
-        cy.get('.toggle').click()
-        cy.get('label').should('have.css', 'text-decoration-line', 'line-through')
-    })
+    describe('toggling todos', () => {
+        it('should toggle test correctly', () => {
+          todoPage.toggleTodo(0)
+          todoPage.validateTodoCompletedState(0, true)
+        })
+        
     
-    it('should clear completed todos', () => {
-        cy.get('.toggle').click()
-        cy.get('label').should('have.css', 'text-decoration-line', 'line-through')
-
-        cy.get('.clear-completed').click()
-        cy.get('.todo-list').should('not.have.descendants', 'li')
+        it('should clear completed todos', () => {
+            todoPage.toggleTodo(0)
+            todoPage.clearCompleted()
+            todoPage.validateNumberOfTodosShown(0)
+        })
     })
 }) 
