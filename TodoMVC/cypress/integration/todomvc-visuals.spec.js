@@ -15,6 +15,7 @@ describe('visual validation', () => {
             {deviceName: 'iPhone X'},
         ]
     }))
+    
     afterEach(() => cy.eyesClose())
 
     it('should look good', () => {
